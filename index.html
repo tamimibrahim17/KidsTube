@@ -11,6 +11,7 @@
   <!-- <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
   <style type="text/css">
   </style>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.min.js"></script>
 </head>
 
 <body>
@@ -62,7 +63,23 @@
   <script src="video.min.js"></script>
   <script src="videojs.hotkeys.min.js"></script>
   <script>
-    // videojs('my-video', {autoplay: true});
+
+  const uuid = PubNub.generateUUID();
+  const pubnub = new PubNub({
+    publishKey: "pub-c-4a8c3170-2e82-437c-9a64-e24fe9ae005c",
+    subscribeKey: "sub-c-9ae978da-3898-11ec-b886-526a8555c638",
+    uuid: uuid
+  });
+
+// setInterval(function(){
+//     pubnub.publish({
+//       channel : "pubnub_onboarding_channel",
+//       message : {"sender": 'tamim', "content": window.location.href}
+//     }, function(status, response) {
+//       //Handle error here
+//     });  
+//   },3000);
+
     // document.getElementById('my-video').mul
   videojs('my-video',{autoplay : true}).ready(function() {
     this.hotkeys({

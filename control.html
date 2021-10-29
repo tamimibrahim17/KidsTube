@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Control Panel</title>
+</head>
+
+<body>
+<button id="publish-button"></button>
+<ul id="link">
+  
+</ul>
+
+</body>
+
+<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+  const uuid = PubNub.generateUUID();
+  const pubnub = new PubNub({
+    publishKey: "pub-c-4a8c3170-2e82-437c-9a64-e24fe9ae005c",
+    subscribeKey: "sub-c-9ae978da-3898-11ec-b886-526a8555c638",
+    uuid: uuid
+  });
+
+  const button = document.getElementById('publish-button');
+
+  button.addEventListener('click', () => {
+    pubnub.publish({
+      channel : "kidstube",
+      message : {"sender": 'control', "content": ""}
+    }, function(status, response) {
+      //Handle error here
+    });
+  });
+
+
+
+  pubnub.subscribe({
+    channels: ['kidstube'],
+    withPresence: true
+  });
+
+  pubnub.addListener({
+    message: function(event) {
+      if( event.message.sender == 'control' ){
+        return;
+      }
+
+      if( event.message.sender == 'all' ){
+        console.log(event.message.content[0]);
+        for (var i = event.message.content.length - 1; i >= 0; i++) {
+          console.log(event.message.content[i]);
+          $('ul#link').append('<li><a id="'+event.message.content[i].link+'">'+event.message.content[i].name+'</a></li>');
+        }
+      }
+    }
+  });
+
+</script>
+</html>

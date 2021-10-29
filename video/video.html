@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>No No Healthy Habits with Baby Monkey _ Kids Songs and Nursery Rhymes by Little Angel [iz_04QWlSvY]</title>
+  <title>video</title>
 <head>
-  <link href="video-js.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="bootstrap.min.css">
+  <link href="../video-js.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../bootstrap.min.css">
   <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
   <!-- <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
   <style type="text/css">
   </style>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.min.js"></script>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
         data-setup='{"autoplay" : true}'
         autoplay
       >
-        <source src="video/No No Healthy Habits with Baby Monkey _ Kids Songs and Nursery Rhymes by Little Angel [iz_04QWlSvY].mp4" type="video/mp4" />
+        <source src="video.mp4" type="video/mp4" />
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a
           web browser that
@@ -59,10 +60,52 @@
   </div>
 
 
-  <script src="video.min.js"></script>
-  <script src="videojs.hotkeys.min.js"></script>
+  <script src="../video.min.js"></script>
+  <script src="../videojs.hotkeys.min.js"></script>
   <script>
-    // videojs('my-video', {autoplay: true});
+  const uuid = PubNub.generateUUID();
+  const pubnub = new PubNub({
+    publishKey: "pub-c-4a8c3170-2e82-437c-9a64-e24fe9ae005c",
+    subscribeKey: "sub-c-9ae978da-3898-11ec-b886-526a8555c638",
+    uuid: uuid
+  });
+
+  var videoInfo = '{"name":"video","path":"video\/video.mp4","link":"video\/video.html"}';
+  var allVid = '[{"name":"No No Healthy Habits with Baby Monkey _ Kids Songs and Nursery Rhymes by Little Angel [iz_04QWlSvY]","path":"video\/No No Healthy Habits with Baby Monkey _ Kids Songs and Nursery Rhymes by Little Angel [iz_04QWlSvY].mp4","link":"video\/no-no-healthy-habits-with-baby-monkey-kids-songs-and-nursery-rhymes-by-little-angel-iz-04-q-wl-sv-y.html"},{"name":"video","path":"video\/video.mp4","link":"video\/video.html"}]';
+
+setInterval(function(){
+    pubnub.publish({
+      channel : "kidstube",
+      message : {"sender": 'playing', "content": JSON.parse(videoInfo)}
+    }, function(status, response) {
+      //Handle error here
+    });  
+  },2000);
+
+setInterval(function(){
+    pubnub.publish({
+      channel : "kidstube",
+      message : {"sender": 'all', "content": JSON.parse(allVid)}
+    }, function(status, response) {
+      //Handle error here
+    });  
+  },2000);
+
+  pubnub.subscribe({
+    channels: ['kidstube'],
+    withPresence: true
+  });
+
+  pubnub.addListener({
+    message: function(event) {
+      console.log(event);
+    },
+    presence: function(event) {
+      console.log('Presense');
+      console.log(event);
+    }
+  });
+
     // document.getElementById('my-video').mul
   videojs('my-video',{autoplay : true}).ready(function() {
     this.hotkeys({
